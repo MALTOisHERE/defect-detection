@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "filename": "defect_1.jpg",
+    "predicted_class": "Defect",
+    "actual_class": "Defect",
+    "feedback_provided": true,
+    "inspector_comment": ""
+  },
+  {
+    "id": 2,
+    "filename": "nodefect_1.jpg",
+    "predicted_class": "No Defect",
+    "actual_class": "Defect",
+    "feedback_provided": true,
+    "inspector_comment": "fucking hell"
+  },
+  {
+    "id": 3,
+    "filename": "defect_2.jpg",
+    "predicted_class": "No Defect",
+    "actual_class": "Defect",
+    "feedback_provided": true,
+    "inspector_comment": "hello"
+  },
+  {
+    "id": 4,
+    "filename": "nodefect_2.jpg",
+    "predicted_class": "No Defect",
+    "actual_class": "Defect",
+    "feedback_provided": true,
+    "inspector_comment": "rrgrgrg"
+  },
+  {
+    "id": 5,
+    "filename": "1745004762_Te-gl_0018.jpg",
+    "predicted_class": "Defect",
+    "actual_class": null,
+    "feedback_provided": false,
+    "inspector_comment": null
+  }
+]

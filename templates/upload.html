@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Submit New Image{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Submit a New Image for Prediction</h1>
+
+{# Flash messages will be shown here via base.html #}
+
+<div class="card shadow-sm"> {# Added shadow #}
+    <div class="card-body">
+        <h5 class="card-title">Upload an image</h5>
+        <p class="card-text">The image will be analyzed by the model (simulation) and added to the validation queue.</p>
+
+        {# Important: enctype="multipart/form-data" is required for file uploads #}
+        <form method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data" class="form-with-loader">
+            <div class="mb-3">
+                <label for="imageFile" class="form-label"><i class="fas fa-file-image me-1"></i>Choose an image file</label>
+                <input class="form-control" type="file" id="imageFile" name="image_file" accept="image/png, image/jpeg, image/gif" required>
+                <div class="form-text">Allowed formats: PNG, JPG, JPEG, GIF.</div> {# Added helper text #}
+            </div>
+            <button type="submit" class="btn btn-primary fw-bold"><i class="fas fa-cogs me-1"></i>Upload & Analyze</button>
+            {# Spinner overlay added dynamically by main.js #}
+        </form>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Validation</a>
+</div>
+
+{% endblock %}

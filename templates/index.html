@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Validate Image #{{ image_data.id }}{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Manual Validation - Image #{{ image_data.id }}</h1>
+
+<div class="row">
+    <!-- Image Display -->
+    <div class="col-md-8">
+        {# Removed nested card, kept outer one for structure #}
+        <div class="card shadow-sm validation-card"> {# Added validation-card class #}
+            <img src="{{ url_for('static', filename='images/' + image_data.filename) }}"
+                 class="card-img-top zoomable-image" {# ADDED class #}
+                 alt="Image to validate: {{ image_data.filename }}">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-image me-1"></i>File: {{ image_data.filename }}</h5>
+                 <p class="card-text d-flex align-items-center">
+                    <strong>AI Prediction:</strong>
+                    <span class="badge prediction-badge ms-2 {% if image_data.predicted_class == 'Defect' %}bg-danger{% else %}bg-success{% endif %}">
+                        {# ** UPDATED Check to use translated class name ** #}
+                        <i class="fas {% if image_data.predicted_class == 'Defect' %}fa-times-circle{% else %}fa-check-circle{% endif %} me-1"></i>
+                        {{ image_data.predicted_class }} {# This will now display "Defect" or "No Defect" #}
+                    </span>
+                </p>
+                <p class="text-muted small">
+                   Image ID: {{ image_data.id }} | {{ pending_count }} pending | {{ validated_count }} / {{ total_images }} validated.
+                </p>
+            </div>
+        </div>
+        {# Removed closing div for the inner card which was removed #}
+    </div>
+
+    <!-- Feedback Form -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Your Validation</h5>
+                <p>Confirm or correct the model's prediction.</p>
+                <form method="POST" action="{{ url_for('submit_feedback') }}" class="form-with-loader">
+                    <input type="hidden" name="image_id" value="{{ image_data.id }}">
+
+                    <div class="mb-3">
+                        <label class="form-label">Is this prediction correct?</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="validation_status" id="correct" value="correct" required>
+                            <label class="form-check-label" for="correct">
+                                Yes, the prediction "{{ image_data.predicted_class }}" is correct.
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="validation_status" id="incorrect" value="incorrect" required>
+                            <label class="form-check-label" for="incorrect">
+                                No, the prediction is incorrect.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Show only if 'incorrect' is selected -->
+                    <div class="mb-3" id="correction-details" style="display: none;">
+                         <label for="actual_class" class="form-label">What is the correct class?</label>
+                         <select class="form-select" name="actual_class" id="actual_class">
+                              <option value="Defect">Defect</option>
+                              <option value="No Defect">No Defect</option>
+                         </select>
+                    </div>
+
+                    <div class="mb-3">
+                        {# ** TRANSLATED Label ** #}
+                        <label for="inspector_comment" class="form-label">Comment (Optional)</label>
+                        <textarea class="form-control" id="inspector_comment" name="inspector_comment" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                       <i class="fas fa-paper-plane me-1"></i> Submit & Next
+                    </button>
+                    {# Spinner overlay added dynamically by main.js #}
+                </form>
+            </div>
+        </div>
+         <div class="alert alert-info mt-3" role="alert">
+            Your feedback will be used to improve the model.
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{# Keep the existing Javascript as it doesn't contain user-facing text #}
+<script>
+    // Simple JavaScript to show/hide the correction dropdown
+    const validationRadios = document.querySelectorAll('input[name="validation_status"]');
+    const correctionDiv = document.getElementById('correction-details');
+    const actualClassSelect = document.getElementById('actual_class');
+
+    validationRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'incorrect') {
+                correctionDiv.style.display = 'block';
+                actualClassSelect.required = true; // Make selection required if incorrect
+            } else {
+                correctionDiv.style.display = 'none';
+                actualClassSelect.required = false; // Make selection optional if correct
+                actualClassSelect.value = ''; // Reset selection if hidden
+            }
+        });
+    });
+
+     // Trigger change event on page load in case of back button usage preserving state
+    const initialSelected = document.querySelector('input[name="validation_status"]:checked');
+    if (initialSelected) {
+        initialSelected.dispatchEvent(new Event('change'));
+    }
+</script>
+{% endblock %}

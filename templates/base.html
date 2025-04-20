@@ -1,0 +1,106 @@
+<!doctype html>
+{# ** TRANSLATED Language attribute ** #}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Custom CSS (AFTER Bootstrap) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <title>{% block title %}Defect Inspector AI{% endblock %} | Your Love My AI</title> {# Updated catchy title based on footer #}
+</head>
+{# Apply dark-mode class via JS later #}
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top mb-4"> {# Sticky top navbar #}
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+            <i class="fas fa-robot me-2"></i>Defect Inspector AI
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item">
+              <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}"><i class="fas fa-clipboard-check me-1"></i>Validate</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.endpoint == 'view_results' %}active{% endif %}" href="{{ url_for('view_results') }}"><i class="fas fa-chart-pie me-1"></i>Results</a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link {% if request.endpoint == 'show_upload_form' %}active{% endif %}" href="{{ url_for('show_upload_form') }}"><i class="fas fa-upload me-1"></i>Submit</a>
+            </li>
+            <li class="nav-item ms-lg-3"> {# Spacing for theme toggle #}
+               <button id="theme-toggle" class="btn btn-outline-secondary btn-sm" aria-label="Toggle theme">
+                  <i class="fas fa-sun" id="theme-icon-sun"></i>
+                  <i class="fas fa-moon d-none" id="theme-icon-moon"></i>
+                </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              {# Map category to icon #}
+              {% set icon = 'info-circle' %}
+              {% if category == 'success' %}{% set icon = 'check-circle' %}
+              {% elif category == 'warning' %}{% set icon = 'exclamation-triangle' %}
+              {% elif category == 'danger' %}{% set icon = 'exclamation-circle' %}
+              {% endif %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                <i class="fas fa-{{ icon }} me-2"></i>
+                <div>{{ message }}</div> {# Flash messages are translated in app.py #}
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer class="mt-5 py-4 text-center text-muted">
+        <div class="container">
+            {# Footer text seems custom - keeping as is #}
+            <p class="mb-0">© {{ current_year }} ENSA KENITRA SSI MASTER.</p>
+        </div>
+    </footer>
+
+    <!-- Image Zoom Modal -->
+    <div class="modal fade" id="imageZoomModal" tabindex="-1" aria-labelledby="imageZoomModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="imageZoomModalLabel">Image Viewer</h5>
+            {# ** TRANSLATED Aria-label ** #}
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <img src="" id="zoomedImage" alt="Zoomed Image" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    {% block scripts %}
+    {% endblock %} {# Allow page-specific scripts #}
+
+</body>
+</html>
